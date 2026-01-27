@@ -1,0 +1,410 @@
+import tkinter as tk
+from tkinter import ttk, scrolledtext
+
+# Данные с примерами кода
+snippets = {
+    "Python": {
+        "Работа со строками": [
+            {
+                "title": "Разворот строки",
+                "code": "# Разворот строки\ns = \"Hello, World!\"\nreversed_s = s[::-1]\nprint(reversed_s)  # !dlroW ,olleH",
+                "explanation": "Использует срез (slice) с шагом -1 для разворота строки. Синтаксис [начало:конец:шаг].",
+                "use_case": "Когда нужно быстро перевернуть строку без циклов. Полезно для проверки палиндромов."
+            },
+            {
+                "title": "Проверка на палиндром",
+                "code": "# Проверка строки на палиндром\ndef is_palindrome(s):\n    # Убираем пробелы и приводим к нижнему регистру\n    s = s.replace(\" \", \"\").lower()\n    return s == s[::-1]\n\n# Пример использования\nprint(is_palindrome(\"А роза упала на лапу Азора\"))  # True\nprint(is_palindrome(\"Hello\"))  # False",
+                "explanation": "Сравнивает исходную строку с её развёрнутой версией после очистки от пробелов и приведения к нижнему регистру.",
+                "use_case": "Задачи на проверку симметричности строки, обработка текстовых данных."
+            },
+            {
+                "title": "Разделение и объединение строк",
+                "code": "# Разделение строки\ntext = \"apple,banana,cherry\"\nfruits = text.split(\",\")\nprint(fruits)  # ['apple', 'banana', 'cherry']\n\n# Объединение списка в строку\nnew_text = \", \".join(fruits)\nprint(new_text)  # apple, banana, cherry",
+                "explanation": "Метод split() разбивает строку по разделителю, метод join() объединяет список строк в одну строку.",
+                "use_case": "Парсинг CSV данных, обработка пользовательского ввода, форматирование вывода."
+            }
+        ],
+        "Работа с файлами": [
+            {
+                "title": "Чтение всего файла",
+                "code": "# Чтение всего файла целиком\nwith open('file.txt', 'r', encoding='utf-8') as f:\n    content = f.read()\n    print(content)",
+                "explanation": "Контекстный менеджер (with) гарантирует закрытие файла. Метод read() загружает весь файл в строку.",
+                "use_case": "Подходит для небольших файлов, где нужно обработать весь текст сразу."
+            },
+            {
+                "title": "Построчное чтение файла",
+                "code": "# Чтение файла построчно\nwith open('file.txt', 'r', encoding='utf-8') as f:\n    for line in f:\n        # Убираем лишние пробелы в конце строки\n        cleaned_line = line.strip()\n        print(cleaned_line)",
+                "explanation": "Файловый объект является итерируемым, что позволяет читать файл построчно без загрузки в память целиком.",
+                "use_case": "Обработка больших файлов, лог-файлов, построчная обработка данных."
+            },
+            {
+                "title": "Запись в файл",
+                "code": "# Запись строки в файл\nwith open('output.txt', 'w', encoding='utf-8') as f:\n    f.write(\"Первая строка\\n\")\n    f.write(\"Вторая строка\\n\")\n\n# Добавление текста в существующий файл\nwith open('output.txt', 'a', encoding='utf-8') as f:\n    f.write(\"Третья строка (добавлена)\\n\")",
+                "explanation": "Режим 'w' перезаписывает файл, режим 'a' добавляет текст в конец файла.",
+                "use_case": "Сохранение результатов работы программы, логирование, генерация отчетов."
+            }
+        ],
+        "Работа со списками": [
+            {
+                "title": "Фильтрация списка",
+                "code": "# Фильтрация списка с помощью list comprehension\nnumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]\neven_numbers = [x for x in numbers if x % 2 == 0]\nprint(even_numbers)  # [2, 4, 6, 8, 10]\n\n# Фильтрация с помощью filter()\neven_numbers_filter = list(filter(lambda x: x % 2 == 0, numbers))\nprint(even_numbers_filter)  # [2, 4, 6, 8, 10]",
+                "explanation": "List comprehension создает новый список на основе существующего с применением условия. Функция filter() делает то же самое, но с использованием lambda-функции.",
+                "use_case": "Отбор элементов по условию, очистка данных, преобразование коллекций."
+            },
+            {
+                "title": "Сортировка списка",
+                "code": "# Сортировка списка\nnumbers = [5, 2, 8, 1, 9, 3]\n\n# Сортировка по возрастанию\nsorted_asc = sorted(numbers)\nprint(sorted_asc)  # [1, 2, 3, 5, 8, 9]\n\n# Сортировка по убыванию\nsorted_desc = sorted(numbers, reverse=True)\nprint(sorted_desc)  # [9, 8, 5, 3, 2, 1]\n\n# Сортировка на месте\nnumbers.sort()\nprint(numbers)  # [1, 2, 3, 5, 8, 9]",
+                "explanation": "Функция sorted() возвращает новый отсортированный список, метод sort() сортирует список на месте (изменяет исходный).",
+                "use_case": "Подготовка данных для отображения, алгоритмы поиска, организация данных."
+            }
+        ],
+        "Функции и лямбда-выражения": [
+            {
+                "title": "Создание функции",
+                "code": "# Простая функция\ndef greet(name):\n    \"\"\"Возвращает приветствие для указанного имени.\"\"\"\n    return f\"Привет, {name}!\"\n\n# Функция с параметрами по умолчанию\ndef power(base, exponent=2):\n    \"\"\"Возводит число в степень.\"\"\"\n    return base ** exponent\n\n# Пример использования\nprint(greet(\"Анна\"))  # Привет, Анна!\nprint(power(3))  # 9\nprint(power(3, 3))  # 27",
+                "explanation": "Функции объявляются с помощью ключевого слова def. Параметры по умолчанию позволяют вызывать функцию с меньшим количеством аргументов.",
+                "use_case": "Структурирование кода, избегание дублирования, создание многократно используемых блоков кода."
+            },
+            {
+                "title": "Лямбда-функции",
+                "code": "# Простая лямбда-функция\nadd = lambda x, y: x + y\nprint(add(5, 3))  # 8\n\n# Лямбда в качестве аргумента\nnumbers = [1, 2, 3, 4, 5]\nsquared = list(map(lambda x: x ** 2, numbers))\nprint(squared)  # [1, 4, 9, 16, 25]\n\n# Лямбда для сортировки сложных структур\ndata = [(\"Яблоко\", 50), (\"Банан\", 30), (\"Апельсин\", 40)]\nsorted_data = sorted(data, key=lambda x: x[1])  # Сортировка по цене\nprint(sorted_data)  # [('Банан', 30), ('Апельсин', 40), ('Яблоко', 50)]",
+                "explanation": "Лямбда-функции - это анонимные функции, определяемые в одной строке. Полезны для простых операций, передаваемых в качестве аргументов.",
+                "use_case": "Короткие операции, функции обратного вызова (callbacks), сортировка и фильтрация данных."
+            }
+        ]
+    },
+    "JavaScript": {
+        "Массивы": [
+            {
+                "title": "Фильтрация массива",
+                "code": "// Фильтрация массива\nconst numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];\nconst evenNumbers = numbers.filter(num => num % 2 === 0);\nconsole.log(evenNumbers); // [2, 4, 6, 8, 10]",
+                "explanation": "Метод filter создаёт новый массив из элементов, прошедших проверку в функции-колбэке.",
+                "use_case": "Отбор элементов по условию, фильтрация данных от пользователя."
+            },
+            {
+                "title": "Преобразование массива (map)",
+                "code": "// Преобразование каждого элемента массива\nconst numbers = [1, 2, 3, 4, 5];\nconst squared = numbers.map(num => num * num);\nconsole.log(squared); // [1, 4, 9, 16, 25]",
+                "explanation": "Метод map создаёт новый массив, применяя функцию к каждому элементу исходного массива.",
+                "use_case": "Преобразование данных, извлечение значений из объектов массива."
+            }
+        ]
+    },
+    "HTML/CSS": {
+        "Основы HTML": [
+            {
+                "title": "Базовая структура HTML",
+                "code": "<!DOCTYPE html>\n<html lang=\"ru\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Моя страница</title>\n    <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n    <header>\n        <h1>Заголовок страницы</h1>\n    </header>\n    <main>\n        <p>Основное содержимое страницы.</p>\n    </main>\n    <footer>\n        <p>Подвал страницы</p>\n    </footer>\n</body>\n</html>",
+                "explanation": "Базовая структура HTML-документа с семантическими тегами (header, main, footer).",
+                "use_case": "Создание любой веб-страницы, начало любого веб-проекта."
+            }
+        ],
+        "Стилизация CSS": [
+            {
+                "title": "Flexbox выравнивание по центру",
+                "code": "/* Центрирование элемента по горизонтали и вертикали */\n.container {\n    display: flex;\n    justify-content: center;  /* Горизонтальное выравнивание */\n    align-items: center;      /* Вертикальное выравнивание */\n    height: 100vh;            /* Высота на весь экран */\n}\n\n.centered-element {\n    width: 200px;\n    height: 200px;\n    background-color: lightblue;\n}",
+                "explanation": "Flexbox позволяет легко центрировать элементы. justify-content управляет горизонтальным выравниванием, align-items - вертикальным.",
+                "use_case": "Создание адаптивных макетов, центрирование содержимого страницы."
+            }
+        ]
+    }
+}
+
+
+class CodeAidApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Programming Aid & Liberator")
+        self.root.geometry("900x700")
+        
+        # Настройка стилей
+        self.setup_styles()
+        
+        # Переменные для хранения выбора
+        self.lang_var = tk.StringVar()
+        self.topic_var = tk.StringVar()
+        self.search_var = tk.StringVar()
+        
+        # Создание интерфейса
+        self.create_widgets()
+        
+        # Заполнение списка языков
+        self.update_lang_combo()
+        
+        # Установка обработчиков событий
+        self.setup_event_handlers()
+        
+        # Загружаем первый пример по умолчанию
+        self.load_first_example()
+
+    def setup_styles(self):
+        """Настройка стилей элементов интерфейса"""
+        style = ttk.Style()
+        style.theme_use('clam')
+        
+        # Настройка цветов
+        self.root.configure(bg='#f0f0f0')
+        
+        # Стили для кнопок
+        style.configure('TButton', font=('Arial', 10), padding=6)
+        style.configure('Title.TLabel', font=('Arial', 16, 'bold'))
+        style.configure('Header.TLabel', font=('Arial', 11, 'bold'))
+
+    def create_widgets(self):
+        """Создание всех элементов интерфейса"""
+        # Главный контейнер
+        main_frame = ttk.Frame(self.root)
+        main_frame.pack(fill='both', expand=True, padx=10, pady=10)
+        
+        # Заголовок
+        title_label = ttk.Label(main_frame, text="Programming Aid & Liberator", 
+                                style='Title.TLabel')
+        title_label.pack(pady=(0, 15))
+        
+        # Панель управления (язык, тема, поиск)
+        control_frame = ttk.Frame(main_frame)
+        control_frame.pack(fill='x', pady=(0, 10))
+        
+        # Выбор языка
+        lang_frame = ttk.Frame(control_frame)
+        lang_frame.pack(side='left', padx=(0, 20))
+        
+        ttk.Label(lang_frame, text="Язык программирования:", 
+                  style='Header.TLabel').pack(anchor='w')
+        self.lang_combo = ttk.Combobox(lang_frame, textvariable=self.lang_var, 
+                                       width=20, state='readonly')
+        self.lang_combo.pack(pady=(5, 0))
+        
+        # Выбор темы
+        topic_frame = ttk.Frame(control_frame)
+        topic_frame.pack(side='left', padx=(0, 20))
+        
+        ttk.Label(topic_frame, text="Категория:", 
+                  style='Header.TLabel').pack(anchor='w')
+        self.topic_combo = ttk.Combobox(topic_frame, textvariable=self.topic_var, 
+                                        width=25, state='readonly')
+        self.topic_combo.pack(pady=(5, 0))
+        
+        # Поиск
+        search_frame = ttk.Frame(control_frame)
+        search_frame.pack(side='left', fill='x', expand=True)
+        
+        ttk.Label(search_frame, text="Поиск по примерам:", 
+                  style='Header.TLabel').pack(anchor='w')
+        search_container = ttk.Frame(search_frame)
+        search_container.pack(fill='x', pady=(5, 0))
+        
+        self.search_entry = ttk.Entry(search_container, textvariable=self.search_var, 
+                                      width=30)
+        self.search_entry.pack(side='left', fill='x', expand=True)
+        
+        clear_btn = ttk.Button(search_container, text="Очистить", 
+                               command=self.clear_search)
+        clear_btn.pack(side='left', padx=(5, 0))
+        
+        # Основная область с примером
+        content_frame = ttk.Frame(main_frame)
+        content_frame.pack(fill='both', expand=True)
+        
+        # Левая панель: список примеров
+        left_panel = ttk.Frame(content_frame, width=250)
+        left_panel.pack(side='left', fill='y', padx=(0, 10))
+        left_panel.pack_propagate(False)
+        
+        ttk.Label(left_panel, text="Доступные примеры:", 
+                  style='Header.TLabel').pack(anchor='w', pady=(0, 5))
+        
+        # Список примеров
+        examples_frame = ttk.Frame(left_panel)
+        examples_frame.pack(fill='both', expand=True)
+        
+        # Добавляем Scrollbar для списка
+        scrollbar = ttk.Scrollbar(examples_frame)
+        scrollbar.pack(side='right', fill='y')
+        
+        self.examples_listbox = tk.Listbox(examples_frame, 
+                                           yscrollcommand=scrollbar.set,
+                                           font=('Arial', 10),
+                                           selectbackground='#4a86e8',
+                                           selectforeground='white')
+        self.examples_listbox.pack(side='left', fill='both', expand=True)
+        scrollbar.config(command=self.examples_listbox.yview)
+        
+        # Правая панель: код и объяснение
+        right_panel = ttk.Frame(content_frame)
+        right_panel.pack(side='left', fill='both', expand=True)
+        
+        # Область для кода
+        code_frame = ttk.LabelFrame(right_panel, text="Пример кода")
+        code_frame.pack(fill='both', expand=True, pady=(0, 10))
+        
+        self.code_text = scrolledtext.ScrolledText(code_frame, 
+                                                   font=('Courier New', 10),
+                                                   wrap=tk.WORD,
+                                                   bg='#f7f7f7',
+                                                   relief=tk.FLAT)
+        self.code_text.pack(fill='both', expand=True, padx=5, pady=5)
+        
+        # Кнопки для работы с кодом
+        button_frame = ttk.Frame(code_frame)
+        button_frame.pack(fill='x', padx=5, pady=(0, 5))
+        
+        copy_btn = ttk.Button(button_frame, text="Копировать код", 
+                              command=self.copy_code)
+        copy_btn.pack(side='left')
+        
+        # Область для объяснения
+        explanation_frame = ttk.LabelFrame(right_panel, text="Объяснение и применение")
+        explanation_frame.pack(fill='both', expand=True)
+        
+        self.explanation_text = scrolledtext.ScrolledText(explanation_frame,
+                                                          font=('Arial', 10),
+                                                          wrap=tk.WORD,
+                                                          height=6)
+        self.explanation_text.pack(fill='both', expand=True, padx=5, pady=5)
+        
+        # Статус бар
+        self.status_bar = ttk.Label(main_frame, text="Готово", relief=tk.SUNKEN)
+        self.status_bar.pack(fill='x', pady=(10, 0))
+
+    def setup_event_handlers(self):
+        """Настройка обработчиков событий"""
+        self.lang_var.trace('w', self.on_lang_changed)
+        self.topic_var.trace('w', self.on_topic_changed)
+        self.search_var.trace('w', self.on_search)
+        self.examples_listbox.bind('<<ListboxSelect>>', self.on_example_selected)
+        
+        # Обработка нажатия Enter в поле поиска
+        self.search_entry.bind('<Return>', lambda e: self.on_search())
+
+    def update_lang_combo(self):
+        """Заполняет комбобокс списком языков."""
+        languages = list(snippets.keys())
+        self.lang_combo['values'] = languages
+        if languages:
+            self.lang_combo.current(0)
+
+    def on_lang_changed(self, *args):
+        """При изменении языка обновляет список тем."""
+        lang = self.lang_var.get()
+        if lang in snippets:
+            topics = list(snippets[lang].keys())
+            self.topic_combo['values'] = topics
+            if topics:
+                self.topic_combo.current(0)
+        else:
+            self.topic_combo['values'] = []
+            self.topic_var.set('')
+            self.examples_listbox.delete(0, tk.END)
+
+    def on_topic_changed(self, *args):
+        """При изменении темы обновляет список примеров."""
+        lang = self.lang_var.get()
+        topic = self.topic_var.get()
+        
+        self.examples_listbox.delete(0, tk.END)
+        
+        if lang in snippets and topic in snippets[lang]:
+            for snippet in snippets[lang][topic]:
+                self.examples_listbox.insert(tk.END, snippet['title'])
+            
+            # Выбираем первый элемент в списке
+            if self.examples_listbox.size() > 0:
+                self.examples_listbox.selection_set(0)
+                self.on_example_selected(None)
+        
+        self.update_status(f"Тема: {topic}")
+
+    def on_example_selected(self, event):
+        """При выборе примера отображает код и пояснение."""
+        selection = self.examples_listbox.curselection()
+        if not selection:
+            return
+            
+        idx = selection[0]
+        lang = self.lang_var.get()
+        topic = self.topic_var.get()
+        
+        if lang in snippets and topic in snippets[lang]:
+            snippet = snippets[lang][topic][idx]
+            
+            # Очищаем и заполняем поле с кодом
+            self.code_text.delete(1.0, tk.END)
+            self.code_text.insert(1.0, snippet['code'])
+            
+            # Очищаем и заполняем поле с объяснением
+            self.explanation_text.delete(1.0, tk.END)
+            explanation = f"{snippet['explanation']}\n\nПрименение: {snippet['use_case']}"
+            self.explanation_text.insert(1.0, explanation)
+            
+            self.update_status(f"Пример: {snippet['title']}")
+
+    def on_search(self, *args):
+        """Фильтрует примеры по ключевому слову."""
+        query = self.search_var.get().lower().strip()
+        lang = self.lang_var.get()
+        topic = self.topic_var.get()
+        
+        self.examples_listbox.delete(0, tk.END)
+        
+        if not query or lang not in snippets or topic not in snippets[lang]:
+            # Если поиск пустой, показываем все примеры
+            if lang in snippets and topic in snippets[lang]:
+                for snippet in snippets[lang][topic]:
+                    self.examples_listbox.insert(tk.END, snippet['title'])
+        else:
+            # Выполняем поиск по всем полям сниппета
+            found_examples = []
+            for snippet in snippets[lang][topic]:
+                search_fields = [
+                    snippet['title'].lower(),
+                    snippet['code'].lower(),
+                    snippet['explanation'].lower(),
+                    snippet['use_case'].lower()
+                ]
+                
+                if any(query in field for field in search_fields):
+                    found_examples.append(snippet['title'])
+            
+            # Добавляем найденные примеры в список
+            for title in found_examples:
+                self.examples_listbox.insert(tk.END, title)
+        
+        # Выбираем первый элемент, если список не пуст
+        if self.examples_listbox.size() > 0:
+            self.examples_listbox.selection_set(0)
+            self.on_example_selected(None)
+        
+        self.update_status(f"Найдено примеров: {self.examples_listbox.size()}")
+
+    def clear_search(self):
+        """Очищает поле поиска."""
+        self.search_var.set("")
+        self.search_entry.focus()
+
+    def copy_code(self):
+        """Копирует код в буфер обмена."""
+        code = self.code_text.get(1.0, tk.END).strip()
+        if code:
+            self.root.clipboard_clear()
+            self.root.clipboard_append(code)
+            self.update_status("Код скопирован в буфер обмена")
+
+    def load_first_example(self):
+        """Загружает первый пример при запуске программы."""
+        if self.examples_listbox.size() > 0:
+            self.examples_listbox.selection_set(0)
+            self.on_example_selected(None)
+
+    def update_status(self, message):
+        """Обновляет статус бар."""
+        self.status_bar.config(text=message)
+
+
+def main():
+    root = tk.Tk()
+    app = CodeAidApp(root)
+    root.mainloop()
+
+
+if __name__ == "__main__":
+    main()
