@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{e9b6c3e8-ce5a-46ef-a789-c3145d26db13}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile />
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="изображение_2026-02-03_203932078.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="code_aid\python main.py" />
+    <Compile Include="code_aid\snippets\cpp_snippets.py" />
+    <Compile Include="code_aid\snippets\csharp_snippets.py" />
+    <Compile Include="code_aid\snippets\init.py" />
+    <Compile Include="code_aid\snippets\java_snippets.py" />
+    <Compile Include="code_aid\snippets\python_snippets.py" />
+    <Compile Include="code_aid\utils\helpers.py" />
+    <Compile Include="code_aid\utils\init.py" />
+    <Compile Include="code_aid\warmups\cpp_warmups.py" />
+    <Compile Include="code_aid\warmups\csharp_warmups.py" />
+    <Compile Include="code_aid\warmups\init.py" />
+    <Compile Include="code_aid\warmups\java_warmups.py" />
+    <Compile Include="code_aid\warmups\python_warmups.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="code_aid" />
+    <Folder Include="code_aid\snippets" />
+    <Folder Include="code_aid\utils" />
+    <Folder Include="code_aid\warmups" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+</Project>
